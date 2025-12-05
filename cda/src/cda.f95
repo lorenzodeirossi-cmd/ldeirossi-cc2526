@@ -35,4 +35,10 @@ PROGRAM cda
  OPEN(UNIT=12, FILE="output_cda.txt", STATUS='replace', ACTION="WRITE")
         WRITE(UNIT=12,FMT='(3(ES14.6, 2X))') (z_axis(i), cubeintegral(i), cubeCDZ(i), i=1, DELTAcube%nz)  
  CLOSE(12)
+
+  PRINT*, SIZE(cubeCDZ)       
+  PRINT*, ALLOCATED(cubeCDZ)
+  DEALLOCATE(cubeCDZ)
+  PRINT*, ALLOCATED(cubeCDZ)
+
 END PROGRAM cda
