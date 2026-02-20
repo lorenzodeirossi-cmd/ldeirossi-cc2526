@@ -4,8 +4,8 @@ MODULE cubes
 
   TYPE, PUBLIC :: cube
     ! PRIVATE
-    CHARACTER (LEN=72) :: str1
-    CHARACTER (LEN=72) :: str2
+    CHARACTER (LEN=256) :: str1
+    CHARACTER (LEN=256) :: str2
     REAL (KIND=wp) :: xmin, ymin, zmin, dx, dy, dz 
     INTEGER :: nx, ny, nz, natoms
     INTEGER, DIMENSION(:), POINTER :: zahl      !atomic number array
@@ -18,7 +18,8 @@ MODULE cubes
             cube_unroll, &
             cube_int, &
             cube_cdz, &
-            cube_del
+            cube_del, &
+            cube_write
 
   INTERFACE OPERATOR(+)
     MODULE PROCEDURE cube_add
@@ -71,8 +72,8 @@ MODULE cubes
     INTEGER :: i, j 
 
     !
-    cube_add%str1 = mycube1%str1 // mycube2%str1
-    cube_add%str2 = mycube1%str2 // mycube2%str2
+    cube_add%str1 = mycube1%str1 
+    cube_add%str2 = mycube1%str2 
     cube_add%natoms = mycube1%natoms + mycube2%natoms 
     cube_add%xmin = mycube1%xmin
     cube_add%ymin = mycube1%ymin
@@ -122,7 +123,7 @@ MODULE cubes
     !we assume that the 2 cubes contains yet infos of the two fragments
     !all info in cube_sub will be the copy of the first cube unless the array
 
-    cube_sub%str1 = mycube1%str1 // mycube2%str1
+    cube_sub%str1 = mycube1%str1
     cube_sub%str2 = "Subtruction of the two cubes"
     cube_sub%natoms = mycube1%natoms
     cube_sub%xmin = mycube1%xmin
@@ -216,5 +217,27 @@ MODULE cubes
     ! ...
   END SUBROUTINE cube_del
 
+  SUBROUTINE cube_write (mycube, out_file)
+    TYPE (cube), INTENT(IN) :: mycube
+    CHARACTER (LEN=*), INTENT(IN) :: out_file
+    INTEGER :: i
+    
+    OPEN(UNIT=12, FILE=out_file, STATUS='replace', ACTION="WRITE")
+    
+    WRITE(UNIT=12,FMT='(A)') mycube%str1
+    WRITE(UNIT=12,FMT='(A)') '! Density difference cube file'
+    WRITE(UNIT=12,FMT='(I5, 3ES14.6)') mycube%natoms, mycube%xmin, mycube%ymin, mycube%zmin
+    WRITE(UNIT=12,FMT='(I5, 3ES14.6)') mycube%nx, mycube%dx, 0.0_wp, 0.0_wp
+    WRITE(UNIT=12,FMT='(I5, 3ES14.6)') mycube%ny, 0.0_wp, mycube%dy, 0.0_wp
+    WRITE(UNIT=12,FMT='(I5, 3ES14.6)') mycube%nz, 0.0_wp, 0.0_wp, mycube%dz
+
+    DO i = 1, mycube%natoms
+        WRITE(UNIT=12,FMT='(I5, 3ES14.6)') mycube%zahl(i), mycube%x(i), mycube%y(i), mycube%z(i)
+    ENDDO
+
+    WRITE(UNIT=12,FMT='(I5, 3ES14.6)') mycube%array
+    CLOSE(12)
+
+  END SUBROUTINE cube_write
 
 END MODULE cubes
