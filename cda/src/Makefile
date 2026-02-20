@@ -4,13 +4,15 @@ FC=gfortran
 FFLAGS =
 
 TARGET= ../bin/cda 
-OBJECTS= cda.o \
+OBJECTS= cube_tools.o
+			cda.o \
          kinds.o \
          cubes.o
 
 $(TARGET): $(OBJECTS)
 	$(FC) $(FFLAGS) -o $(TARGET) $(OBJECTS)
 
+cube_tools.o: cube_tools.f95 kinds.o cubes.o
 cda.o: cda.f95 kinds.o cubes.o
 cubes.o: cubes.f95 kinds.o
 kinds.o: kinds.f95
