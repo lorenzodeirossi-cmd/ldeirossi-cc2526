@@ -1,16 +1,20 @@
-#FC=g95
-#STDF= -std=F
 FC=gfortran
 FFLAGS =
 
-TARGET= ../bin/cda 
-OBJECTS= cube_tools.o
-			cda.o \
-         kinds.o \
-         cubes.o
+TARGET_CDA= ../bin/cda
+TARGET_TOOLS= ../bin/cube_tools
 
-$(TARGET): $(OBJECTS)
-	$(FC) $(FFLAGS) -o $(TARGET) $(OBJECTS)
+OBJECTS_CDA= cda.o kinds.o cubes.o
+OBJECTS_TOOLS= cube_tools.o kinds.o cubes.o
+
+# Fixed the typo here:
+all: $(TARGET_CDA) $(TARGET_TOOLS)
+
+$(TARGET_CDA): $(OBJECTS_CDA)
+	$(FC) $(FFLAGS) -o $(TARGET_CDA) $(OBJECTS_CDA)
+
+$(TARGET_TOOLS): $(OBJECTS_TOOLS)
+	$(FC) $(FFLAGS) -o $(TARGET_TOOLS) $(OBJECTS_TOOLS)
 
 cube_tools.o: cube_tools.f95 kinds.o cubes.o
 cda.o: cda.f95 kinds.o cubes.o
@@ -22,4 +26,4 @@ kinds.o: kinds.f95
 	$(FC) $(STDF) $(FFLAGS) -c -I. -o $*.o $*.f95
 
 clean:
-	$(RM) $(TARGET) *.mod *.o
+	$(RM) $(TARGET_CDA) $(TARGET_TOOLS) *.mod *.o

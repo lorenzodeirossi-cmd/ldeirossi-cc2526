@@ -232,10 +232,10 @@ MODULE cubes
     WRITE(UNIT=12,FMT='(I5, 3ES14.6)') mycube%nz, 0.0_wp, 0.0_wp, mycube%dz
 
     DO i = 1, mycube%natoms
-        WRITE(UNIT=12,FMT='(I5, 3ES14.6)') mycube%zahl(i), mycube%x(i), mycube%y(i), mycube%z(i)
+        WRITE(UNIT=12,FMT='(I5, 4ES14.6)') mycube%zahl(i), mycube%chrg(i), mycube%x(i), mycube%y(i), mycube%z(i)
     ENDDO
 
-    WRITE(UNIT=12,FMT='(I5, 3ES14.6)') mycube%array
+    WRITE(UNIT=12,FMT='(6ES14.6)') mycube%array
     CLOSE(12)
 
   END SUBROUTINE cube_write
